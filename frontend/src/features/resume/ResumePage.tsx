@@ -109,11 +109,22 @@ export default function ResumePage() {
 
   const [resume, setResume] = useState<ResumeResponse | null>(null);
 
+  const [progress, setProgress] = useState(0);
+
   const handleUpload = async (file: File) => {
     try {
       setLoading(true);
 
+      // Reset progress
+      setProgress(0);
+
+      // Upload started
+      setProgress(10);
+
       const result = await uploadResumeService(file);
+
+      // Upload completed
+      setProgress(100);
 
       setResume(result);
     } catch (error) {
@@ -123,6 +134,18 @@ export default function ResumePage() {
       setLoading(false);
     }
   };
+
+  const strengths =
+    resume?.strengths.map((item) => ({
+      title: item,
+      description: "",
+    })) ?? mockResumeData.strengths;
+
+  const weaknesses =
+    resume?.weaknesses.map((item) => ({
+      title: item,
+      description: "",
+    })) ?? mockResumeData.weaknesses;
 
   return (
     <AppLayout>
@@ -163,29 +186,33 @@ export default function ResumePage() {
 
         <div className="lg:col-span-8 space-y-8">
           <UploadZone
-            progress={loading ? 70 : 100}
+            progress={progress}
             loading={loading}
             onUpload={handleUpload}
           />
 
           <ResumeSummary
-            fileName={mockResumeData.fileName}
-            fileSize={mockResumeData.fileSize}
+            fileName={resume?.original_filename ?? mockResumeData.fileName}
+            fileSize={
+              resume
+                ? `${Math.round(resume.file_size / 1024)} KB`
+                : mockResumeData.fileSize
+            }
             uploadedTime={mockResumeData.uploadedTime}
-            summary={mockResumeData.summary}
+            summary={resume?.summary ?? mockResumeData.summary}
           />
 
           <ATSScoreCard
-            score={mockResumeData.atsScore}
+            score={resume?.ats_score ?? mockResumeData.atsScore}
             targetRole={mockResumeData.targetRole}
           />
 
-          <SkillsCard skills={mockResumeData.skills} />
+          <SkillsCard skills={resume?.skills ?? mockResumeData.skills} />
 
           <div className="grid md:grid-cols-2 gap-6">
-            <StrengthsCard strengths={mockResumeData.strengths} />
+            <StrengthsCard strengths={strengths} />
 
-            <WeaknessesCard weaknesses={mockResumeData.weaknesses} />
+            <WeaknessesCard weaknesses={weaknesses} />
           </div>
 
           {/* CTA */}
