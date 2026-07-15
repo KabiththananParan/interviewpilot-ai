@@ -9,7 +9,10 @@ import SkillsCard from "./components/SkillsCard";
 import StrengthsCard from "./components/StrengthsCard";
 import WeaknessesCard from "./components/WeaknessesCard";
 import ResumeUploader from "./components/ResumeUploader";
+import { useState } from "react";
 
+import { uploadResumeService } from "../../services/resume.service";
+import type { ResumeResponse } from "../../services/resume.service";
 import type { ResumeData } from "./types";
 
 const mockResumeData: ResumeData = {
@@ -102,6 +105,25 @@ const mockResumeData: ResumeData = {
 };
 
 export default function ResumePage() {
+  const [loading, setLoading] = useState(false);
+
+  const [resume, setResume] = useState<ResumeResponse | null>(null);
+
+  const handleUpload = async (file: File) => {
+    try {
+      setLoading(true);
+
+      const result = await uploadResumeService(file);
+
+      setResume(result);
+    } catch (error) {
+      console.error(error);
+      alert("Resume upload failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppLayout>
       {/* Page Header */}
@@ -140,7 +162,11 @@ export default function ResumePage() {
         {/* Left Side */}
 
         <div className="lg:col-span-8 space-y-8">
-          <UploadZone progress={mockResumeData.uploadProgress} />
+          <UploadZone
+            progress={loading ? 70 : 100}
+            loading={loading}
+            onUpload={handleUpload}
+          />
 
           <ResumeSummary
             fileName={mockResumeData.fileName}
