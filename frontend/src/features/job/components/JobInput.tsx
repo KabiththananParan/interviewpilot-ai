@@ -10,7 +10,7 @@ interface JobInputProps {
 }
 
 export default function JobInput({ value, onChange, onClear, onAnalyze }: JobInputProps) {
-  const maxLength = 5000;
+  const maxLength = 50000;
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxLength) {
