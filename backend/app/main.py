@@ -7,11 +7,11 @@ from app.core.config import settings
 from app.core.database import Base, engine
 
 # Import all models here
-from app.models.job import Job
-from app.models.resume import Resume
-from app.models.match import Match
 from app.models.interview import Interview
-
+from app.models.job import Job
+from app.models.match import Match
+from app.models.resume import Resume
+from app.models.roadmap import Roadmap
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

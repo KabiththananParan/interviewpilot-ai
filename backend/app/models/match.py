@@ -25,17 +25,35 @@ class Match(Base):
     )
 
     # AI Analysis
-    match_score = Column(Float, nullable=True)
+    match_score = Column(
+        Float,
+        nullable=True,
+    )
 
-    matching_skills = Column(JSON, nullable=True)
+    matching_skills = Column(
+        JSON,
+        nullable=True,
+    )
 
-    missing_skills = Column(JSON, nullable=True)
+    missing_skills = Column(
+        JSON,
+        nullable=True,
+    )
 
-    resume_improvements = Column(JSON, nullable=True)
+    resume_improvements = Column(
+        JSON,
+        nullable=True,
+    )
 
-    interview_focus_areas = Column(JSON, nullable=True)
+    interview_focus_areas = Column(
+        JSON,
+        nullable=True,
+    )
 
-    overall_feedback = Column(Text, nullable=True)
+    overall_feedback = Column(
+        Text,
+        nullable=True,
+    )
 
     # Relationships
     resume = relationship(
@@ -50,6 +68,12 @@ class Match(Base):
 
     interviews = relationship(
         "Interview",
+        back_populates="match",
+        cascade="all, delete-orphan",
+    )
+
+    roadmaps = relationship(
+        "Roadmap",
         back_populates="match",
         cascade="all, delete-orphan",
     )
