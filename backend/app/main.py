@@ -9,6 +9,7 @@ from app.core.database import Base, engine
 # Import all models here
 from app.models.job import Job
 from app.models.resume import Resume
+from app.models.match import Match
 
 
 @asynccontextmanager

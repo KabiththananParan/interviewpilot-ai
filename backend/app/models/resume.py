@@ -1,4 +1,5 @@
 from sqlalchemy import Column, DateTime, Float, Integer, JSON, String, Text
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.core.database import Base
@@ -26,6 +27,13 @@ class Resume(Base):
     skills = Column(JSON, nullable=True)
     strengths = Column(JSON, nullable=True)
     weaknesses = Column(JSON, nullable=True)
+
+    # Relationships
+    matches = relationship(
+        "Match",
+        back_populates="resume",
+        cascade="all, delete-orphan",
+    )
 
     # Metadata
     created_at = Column(
