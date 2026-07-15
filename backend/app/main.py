@@ -10,6 +10,7 @@ from app.core.database import Base, engine
 from app.models.job import Job
 from app.models.resume import Resume
 from app.models.match import Match
+from app.models.interview import Interview
 
 
 @asynccontextmanager

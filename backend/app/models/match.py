@@ -11,7 +11,7 @@ class Match(Base):
     # Primary Key
     id = Column(Integer, primary_key=True, index=True)
 
-    # Relationships
+    # Foreign Keys
     resume_id = Column(
         Integer,
         ForeignKey("resumes.id"),
@@ -37,7 +37,7 @@ class Match(Base):
 
     overall_feedback = Column(Text, nullable=True)
 
-    # ORM Relationships
+    # Relationships
     resume = relationship(
         "Resume",
         back_populates="matches",
@@ -46,6 +46,12 @@ class Match(Base):
     job = relationship(
         "Job",
         back_populates="matches",
+    )
+
+    interviews = relationship(
+        "Interview",
+        back_populates="match",
+        cascade="all, delete-orphan",
     )
 
     # Metadata
