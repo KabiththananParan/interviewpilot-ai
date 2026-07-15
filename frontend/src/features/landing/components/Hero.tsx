@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Play, FileText, CheckCircle2 } from 'lucide-react';
 
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,7 +24,6 @@ export default function Hero() {
     }
     syncSize();
 
-    // Explicitly type the context as WebGLRenderingContext to fix property errors
     const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
     if (!gl) return;
 
@@ -46,7 +46,7 @@ export default function Hero() {
 
       float snoise(vec2 v){
         const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-                 -0.577350269189626, 0.024390243902439);
+                  -0.577350269189626, 0.024390243902439);
         vec2 i  = floor(v + dot(v, C.yy) );
         vec2 x0 = v -   i + dot(i, C.xx);
         vec2 i1;
@@ -73,23 +73,20 @@ export default function Hero() {
 
       void main() {
           vec2 uv = v_texCoord;
-          float t = u_time * 0.2;
-          vec3 color = vec3(0.0588, 0.0902, 0.1647);
+          float t = u_time * 0.15;
+          vec3 color = vec3(0.03, 0.05, 0.1);
           
-          float n1 = snoise(uv * 2.0 + t);
-          float n2 = snoise(uv * 1.5 - t * 0.8);
-          float n3 = snoise(uv * 3.0 + t * 0.5);
+          float n1 = snoise(uv * 1.8 + t);
+          float n2 = snoise(uv * 1.3 - t * 0.6);
           
-          vec3 blue = vec3(0.231, 0.51, 0.965);
-          vec3 purple = vec3(0.545, 0.361, 0.965);
+          vec3 blue = vec3(0.12, 0.25, 0.55);
+          vec3 purple = vec3(0.18, 0.12, 0.38);
           
-          float blob1 = smoothstep(0.2, 0.8, n1);
-          float blob2 = smoothstep(0.3, 0.9, n2);
-          float blob3 = smoothstep(0.4, 1.0, n3);
+          float blob1 = smoothstep(0.1, 0.9, n1);
+          float blob2 = smoothstep(0.2, 0.8, n2);
           
-          color = mix(color, blue * 0.4, blob1);
-          color = mix(color, purple * 0.3, blob2);
-          color = mix(color, blue * 0.2, blob3);
+          color = mix(color, blue * 0.35, blob1);
+          color = mix(color, purple * 0.25, blob2);
           
           gl_FragColor = vec4(color, 1.0);
       }
@@ -125,7 +122,6 @@ export default function Hero() {
     const uRes = gl.getUniformLocation(prog, 'u_resolution');
     const uMouse = gl.getUniformLocation(prog, 'u_mouse');
 
-    // Fixed ESLint 'prefer-const' by using const since object references don't change
     const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
 
     const handleMouseMove = (event: MouseEvent) => {
@@ -160,88 +156,129 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden px-4 md:px-12">
-      <div className="absolute inset-0 w-full h-full opacity-40" style={{ display: 'block' }}>
-        <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
+    <section className="relative min-h-screen flex items-center bg-[#070b15] text-white overflow-hidden px-6 md:px-16 py-12">
+      {/* Background Interactive WebGL canvas */}
+      <div className="absolute inset-0 w-full h-full opacity-50 pointer-events-none">
+        <canvas ref={canvasRef} className="w-full h-full block" />
       </div>
-      
-      <div className="hero-glow -top-20 -left-20"></div>
-      <div className="hero-glow bottom-0 right-0 opacity-50"></div>
-      
-      <div className="max-w-[1280px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
-        <div className="space-y-4 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6">
-            <span className="flex h-2 w-2 rounded-full bg-tertiary animate-pulse"></span>
-            <span className="text-xs font-mono uppercase tracking-widest text-primary font-medium">Now in Private Beta</span>
+
+      <div className="max-w-[1280px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+        
+        {/* Left Copy Section */}
+        <div className="lg:col-span-7 space-y-7 text-left">
+          
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/5 backdrop-blur-md">
+            <span className="flex h-1.5 w-1.5 rounded-full bg-[#10b981]"></span>
+            <span className="text-[9px] font-mono tracking-[0.2em] text-[#94a3b8] uppercase font-bold">
+              Now in Private Beta
+            </span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
-            Land Your Dream <span className="bg-gradient-to-r from-primary via-secondary to-tertiary bg-clip-text text-transparent">Software Engineering</span> Job
+
+          {/* Heading with customized color structure matching mockup */}
+          <h1 className="text-4xl md:text-[56px] font-black tracking-tight leading-[1.12]">
+            Land Your Dream Software <br />
+            <span className="bg-gradient-to-r from-[#c084fc] via-[#818cf8] to-[#10b981] bg-clip-text text-transparent">
+              Engineering
+            </span>{' '}
+            Job
           </h1>
-          <p className="text-base text-on-surface-variant max-w-xl mx-auto lg:mx-0">
+
+          <p className="text-sm md:text-base text-[#94a3b8]/90 max-w-[500px] leading-relaxed">
             The elite mentor for ambitious engineers. From high-fidelity resume analysis to AI-driven mock interviews and customized learning roadmaps designed for FAANG+ standards.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
-            <button className="px-8 py-4 bg-primary text-on-primary rounded-xl font-bold text-lg hover:shadow-[0_0_20px_rgba(173,198,255,0.4)] transition-all transform hover:-translate-y-0.5 active:scale-95">Start Preparing Free</button>
-            <button className="px-8 py-4 border border-white/10 bg-white/5 backdrop-blur-sm text-on-surface rounded-xl font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined">play_circle</span> Watch Demo
+
+          {/* Call to Actions */}
+          <div className="flex flex-wrap gap-4 pt-2">
+            <button className="px-7 py-3.5 bg-[#9ab6ff] text-[#070b15] rounded-xl font-extrabold text-sm hover:bg-[#b3c8ff] hover:shadow-[0_0_24px_rgba(154,182,255,0.4)] transition-all duration-300 transform active:scale-95">
+              Start Preparing Free
+            </button>
+            <button className="px-7 py-3.5 border border-white/[0.08] bg-[#111927]/40 backdrop-blur-md text-slate-200 rounded-xl font-extrabold text-sm hover:bg-[#111927]/80 hover:text-white transition-all duration-300 flex items-center justify-center gap-2.5">
+              <Play className="w-4 h-4 fill-current text-slate-300" />
+              Watch Demo
             </button>
           </div>
-          <div className="pt-10 flex items-center justify-center lg:justify-start gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <span className="text-xs font-mono uppercase">Trusted by engineers at</span>
-            <div className="flex gap-6 items-center">
-              <div className="h-6 w-20 bg-white/10 rounded-full"></div>
-              <div className="h-6 w-24 bg-white/10 rounded-full"></div>
-              <div className="h-6 w-16 bg-white/10 rounded-full"></div>
+
+          {/* Trusted Badges */}
+          {/* <div className="pt-8 flex flex-col sm:flex-row sm:items-center gap-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#475569] font-bold">
+              Trusted by engineers at
+            </span>
+            <div className="flex gap-3.5 items-center">
+              <div className="h-6 w-16 bg-white/[0.03] border border-white/[0.03] rounded-md"></div>
+              <div className="h-6 w-20 bg-white/[0.03] border border-white/[0.03] rounded-md"></div>
+              <div className="h-6 w-14 bg-white/[0.03] border border-white/[0.03] rounded-md"></div>
             </div>
+          </div> */}
+        </div>
+
+        {/* Right Graphical Mockup Section */}
+        <div className="lg:col-span-5 relative flex items-center justify-center min-h-[480px]">
+          <div className="relative w-full max-w-[500px] aspect-[4/3] flex items-center justify-center">
+            
+            {/* SVG Background Trace Path Pattern */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none scale-110">
+              <svg className="w-full h-full opacity-[0.04]" viewBox="0 0 500 400" fill="none">
+                <path d="M 120 120 C 180 80, 340 100, 360 220 C 380 340, 260 380, 180 340" stroke="white" strokeWidth="1.5" strokeDasharray="6 6" />
+                <path d="M 360 220 C 380 340, 420 310, 430 260" stroke="white" strokeWidth="1.5" strokeDasharray="6 6" />
+              </svg>
+            </div>
+
+            {/* Card 1: Resume Uploaded (Top Left) */}
+            <div className="absolute top-[8%] left-[-4%] bg-[#111927]/90 border border-white/[0.04] p-4 rounded-xl w-52 backdrop-blur-lg shadow-[0_20px_50px_rgba(0,0,0,0.45)] flex items-center gap-3">
+              <div className="p-2 bg-white/[0.04] text-[#93c5fd] rounded-lg border border-white/[0.05]">
+                <FileText className="w-4 h-4 text-slate-300" />
+              </div>
+              <div className="flex-1 space-y-2">
+                <span className="text-[11px] font-bold text-slate-200 block">Resume Uploaded</span>
+                <div className="h-[3.5px] w-full bg-white/[0.08] rounded-full overflow-hidden">
+                  <div className="h-full bg-[#60a5fa]/80 w-[72%] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Interview Readiness Assessment (Center Right) */}
+            <div className="absolute top-[28%] right-[2%] bg-[#111927]/90 border border-white/[0.04] p-6 rounded-2xl w-72 backdrop-blur-lg shadow-[0_25px_60px_rgba(0,0,0,0.5)] z-20">
+              <div className="flex justify-between items-center mb-5">
+                <span className="text-[12px] font-extrabold text-slate-300">Interview Readiness</span>
+                <span className="text-[#60a5fa] font-black text-[13px]">84%</span>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                    <span>System Design</span>
+                    <span className="text-slate-400">92%</span>
+                  </div>
+                  <div className="h-[4px] bg-white/[0.08] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#10b981] w-[92%] rounded-full"></div>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                    <span>Coding Patterns</span>
+                    <span className="text-slate-400">78%</span>
+                  </div>
+                  <div className="h-[4px] bg-white/[0.08] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#9ab6ff] w-[78%] rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Job Match Status (Bottom Right) */}
+            <div className="absolute bottom-[10%] right-[-6%] bg-[#111927]/95 border border-white/[0.04] p-4 rounded-xl w-60 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-30 space-y-1.5">
+              <div className="flex items-center gap-2 text-[#10b981]">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-black tracking-wide">Job Match High</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-normal font-medium">
+                Your profile matches 92% of "Senior Frontend Engineer" role at Vercel.
+              </p>
+            </div>
+
           </div>
         </div>
 
-        <div className="relative lg:h-[600px] flex items-center justify-center">
-          <div className="relative w-full aspect-square max-w-[500px]">
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] opacity-20"></div>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <svg className="w-full h-full opacity-20" viewBox="0 0 400 400">
-                <path d="M100 100 Q 200 50 300 100 T 300 300 Q 200 350 100 300 T 100 100" fill="none" stroke="url(#line-grad)" strokeDasharray="10 5" strokeWidth="2"></path>
-                <defs>
-                  <linearGradient id="line-grad" x1="0%" x2="100%" y1="0%" y2="100%">
-                    <stop offset="0%" style={{ stopColor: 'var(--tw-gradient-from)' }}></stop>
-                    <stop offset="100%" style={{ stopColor: 'var(--tw-gradient-to)' }}></stop>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            
-            <div className="glass-card absolute top-[10%] left-[5%] p-4 rounded-xl w-48 animate-float shadow-2xl" style={{ animationDelay: '0s' }}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-primary/20 rounded-lg text-primary"><span className="material-symbols-outlined text-sm">description</span></div>
-                <span className="text-xs font-bold text-on-surface">Resume Uploaded</span>
-              </div>
-              <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-primary w-[80%]"></div></div>
-            </div>
-            
-            <div className="glass-card absolute top-[50%] -translate-y-1/2 left-[55%] -translate-x-1/2 p-6 rounded-2xl w-64 shadow-2xl border-primary/30 z-20">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-semibold">Interview Readiness</span>
-                <span className="text-primary font-bold">84%</span>
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between text-[10px] text-on-surface-variant"><span>System Design</span><span>92%</span></div>
-                <div className="h-1 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-tertiary w-[92%]"></div></div>
-                <div className="flex justify-between text-[10px] text-on-surface-variant"><span>Coding Patterns</span><span>78%</span></div>
-                {/* Fixed the 'class' to 'className' translation error below */}
-                <div className="h-1 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-primary w-[78%]"></div></div>
-              </div>
-            </div>
-            
-            <div className="glass-card absolute bottom-[15%] right-[5%] p-4 rounded-xl w-52 animate-float shadow-2xl" style={{ animationDelay: '2s' }}>
-              <div className="flex items-center gap-2 mb-2 text-tertiary">
-                <span className="material-symbols-outlined text-sm">check_circle</span>
-                <span className="text-xs font-bold">Job Match High</span>
-              </div>
-              <p className="text-[10px] text-on-surface-variant">Your profile matches 92% of "Senior Frontend Engineer" role at Vercel.</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
