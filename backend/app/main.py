@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.core.database import Base, engine
 
 # Import all models here
+from app.models.job import Job
 from app.models.resume import Resume
 
 
@@ -16,8 +17,6 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
 
     yield
-
-    # Cleanup (if needed later)
 
 
 app = FastAPI(
@@ -42,4 +41,6 @@ async def root():
 
 @app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+    }
